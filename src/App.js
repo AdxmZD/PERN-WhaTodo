@@ -5,17 +5,22 @@ import { useState } from "react";
 
 function App() {
   const [input, setInput] = useState("");
-  const [todo, setTodo] = useState([]);
+  const [todos, setTodos] = useState([]);
   return (
     <div className="App">
       <div className="flex mx-auto justify-center py-7">
         <Header />
       </div>
       <div className="flex mx-auto justify-center py-7 w-1/3">
-        <Form input={input} setInput={setInput} todo={todo} setTodo={setTodo} />
+        <Form
+          input={input}
+          setInput={setInput}
+          todos={todos}
+          setTodos={setTodos}
+        />
       </div>
       <div className="flex mx-auto justify-center py-7 w-1/3">
-        <TodoList todo={todo} setTodo={setTodo} />
+        <TodoList todos={todos} setTodos={setTodos} />
       </div>
     </div>
   );

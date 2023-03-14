@@ -1,18 +1,18 @@
 import { React } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-const Form = ({ input, setInput, todo, setTodo }) => {
+const Form = ({ input, setInput, todos, setTodos }) => {
   const inputChange = (event) => {
     setInput(event.target.value);
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    setTodo([...todo, { id: uuidv4(), name: input, completed: false }]);
+    setTodos([...todos, { id: uuidv4(), name: input, completed: false }]);
     setInput("");
   };
 
   return (
-    <form className="flex gap-7" onSubmit={handleSubmit}>
+    <form className="flex justify-between gap-7" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Enter a Todo..."
