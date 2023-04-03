@@ -5,51 +5,83 @@ const Form = ({ input, setInput, todos, setTodos, editTodo, setEditTodo }) => {
   const inputChange = (event) => {
     setInput(event.target.value);
   };
-  const updateTodo = (name, id, completed) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === id ? { name, id, completed } : todo
-    );
-    setTodos(newTodos);
-    setEditTodo(null);
+  const updateTodo = async (description, id, completed) => {
+    try {
+      const body = { description, completed };
+      const updateTodo = await fetch(`http://localhost:5000/todos/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      console.log(updateTodo);
+      const newTodos = todos.map((todo) =>
+        todo.id === id ? { description, id, completed } : todo
+      );
+      setTodos(newTodos);
+      setEditTodo(null);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
   useEffect(() => {
     if (editTodo) {
-      setInput(editTodo.name);
+      setInput(editTodo.description);
     } else {
       setInput("");
     }
   }, [setInput, editTodo]);
 
-  const handleSubmit = (event) => {
+  // console.log(todos);
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!editTodo) {
-      setTodos([...todos, { id: uuidv4(), name: input, completed: false }]);
-      setInput("");
+      try {
+        const todoid = uuidv4();
+        const body = { id: todoid, description: input, completed: false };
+        const addTodo = await fetch("http://localhost:5000/todos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        console.log(addTodo);
+        setTodos([
+          ...todos,
+          { id: todoid, description: input, completed: false },
+        ]);
+        setInput("");
+      } catch (error) {
+        console.error(error.message);
+      }
     } else {
       updateTodo(input, editTodo.id, editTodo.completed);
     }
   };
 
   return (
-    <form className="flex justify-between gap-7 w-full" onSubmit={handleSubmit}>
+    <form
+      className="flex rounded-xl z-20 justify-between gap-7 w-full bg-[#191E2C] p-2"
+      onSubmit={handleSubmit}
+    >
       <input
         type="text"
         placeholder="Enter a Todo..."
         required
         value={input}
-        className="rounded border border-blue w-5/6 text-black p-2"
+        className="rounded w-5/6 text-white p-2 bg-transparent"
         onChange={inputChange}
       />
       {editTodo ? (
         <button
-          className=" rounded-2xl bg-blue w-1/6 p-2 font-semibold font-opensans"
+          className=" rounded-xl bg-[#363B4B] w-1/6 p-2 font-semibold font-opensans"
           type="submit"
         >
           Update
         </button>
       ) : (
         <button
-          className=" rounded-2xl bg-blue w-1/6  p-2 font-semibold font-opensans"
+          className=" rounded-xl bg-[#363B4B] w-1/6  p-2 font-semibold font-opensans"
           type="submit"
         >
           Add
